@@ -45,7 +45,7 @@ public class VictoryState extends GameState
 		load(scoreFile);
 		try
 		{
-			logo = ImageIO.read(new File("data/state/victory.png"));
+			logo = ImageIO.read(new File("victory.png"));
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block

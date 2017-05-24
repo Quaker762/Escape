@@ -19,6 +19,8 @@ import com.palmstudios.object.Player;
 import com.palmstudios.system.Audio;
 import com.palmstudios.system.GameState;
 import com.palmstudios.system.Map;
+import com.palmstudios.system.Tile;
+import com.palmstudios.tile.SpikeTile;
 
 /**
  * @author Jesse
@@ -35,6 +37,7 @@ public class PlayState extends GameState
 	
 	private int 				currentLevel;
 	private int					time;
+	private int					score;
 	
 	public PlayState(GameStateManager gsm)
 	{
@@ -47,14 +50,15 @@ public class PlayState extends GameState
 		currentLevel = 1;
 		map.load("data/map/map" + currentLevel + ".txt");
 	
-		player = new Player("Player", map, 32, 64, 5, false, 0);
+		player = new Player("Player", map, 32, 64, 5, false, 1);
 		enemies = new ArrayList<Enemy>();
 		
 		enemies.add(new Enemy("Goblin1", map, player, 32, 384));
-		//enemies.add(new Enemy("Goblin2", map, 32, 384));
+		enemies.add(new Enemy("Goblin2", map, player, 512, 64));
 		
-		Audio.playSound("data/snd/start.wav");
+		Audio.playSound("data/snd/start.wav", 0);
 		time = GAME_TIME;
+		score = 0;
 	}
 
 	public void update()
@@ -65,6 +69,12 @@ public class PlayState extends GameState
 			gsm.changeState(gsm.getNumberStates() - 1);
 		}
 		
+		if(player.getHealth() <= 0)
+		{
+			gsm.loadState(new DefeatState(gsm));
+			gsm.changeState(gsm.getNumberStates() - 1);
+		}
+		
 		player.update();
 		
 		for(int i = 0; i < enemies.size(); i++)
@@ -72,6 +82,7 @@ public class PlayState extends GameState
 			enemies.get(i).update();
 		}
 		
+		score = score + player.getHealth() + (time / 60);
 		time--;
 	}
 
@@ -80,7 +91,7 @@ public class PlayState extends GameState
 		map.draw(g2d);
 		
 		g2d.setColor(Color.WHITE);
-		g2d.drawString("Health: " + player.getHealth() + "     Time: " + time / 60 , 0, 32);
+		g2d.drawString("Health: " + player.getHealth() + "     Time: " + time / 60 + "       Score: " + score, 0, 32);
 		
 		for(int i = 0; i < enemies.size(); i++)
 		{
@@ -110,6 +121,12 @@ public class PlayState extends GameState
 		if(k == KeyEvent.VK_D || k == KeyEvent.VK_RIGHT)
 		{
 			player.move(32, 0);
+		}
+		
+		if(k == KeyEvent.VK_SPACE)
+		{
+			if(player.placeTrap())
+				map.setTileAt(player.getX() / Tile.TILE_SIZE, (player.getY() / Tile.TILE_SIZE) + 1, new SpikeTile());
 		}
 
 		if (k == KeyEvent.VK_ESCAPE)

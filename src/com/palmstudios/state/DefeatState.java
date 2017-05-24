@@ -43,11 +43,11 @@ public class DefeatState extends GameState
 	public void init()
 	{
 		
-		Audio.playSound("data/go.wav");
+		Audio.playSound("data/snd/go.wav", 0);
 		load(scoreFile);
 		try
 		{
-			logo = ImageIO.read(new File("defeat.png"));
+			logo = ImageIO.read(new File("data/state/defeat.png"));
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block
@@ -67,7 +67,7 @@ public class DefeatState extends GameState
 	{
 		// TODO Auto-generated method stub
 		g2d.drawImage(logo, 0, 0, logo.getWidth(), logo.getHeight(), null);
-		g2d.drawString("Score: " + score, 200, 200);
+		g2d.drawString("Score: " + score, 200, 260);
 	}
 
 	@Override

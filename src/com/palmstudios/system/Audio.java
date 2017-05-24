@@ -20,14 +20,17 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Audio
 {
-	public static void playSound(String fileName)
+	private static Clip ac;
+	
+	public static void playSound(String fileName, int loop)
 	{
 		try
 		{
 			AudioInputStream ais = AudioSystem.getAudioInputStream(new File(fileName));
-			Clip ac = AudioSystem.getClip();
+			ac = AudioSystem.getClip();
 			
 			ac.open(ais);
+			ac.loop(loop);
 			ac.start();
 
 		} catch (UnsupportedAudioFileException e)
@@ -41,6 +44,10 @@ public class Audio
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public static void stopSound()
+	{
+		ac.stop();
 	}
 }

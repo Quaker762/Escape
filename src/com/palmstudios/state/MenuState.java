@@ -31,7 +31,7 @@ public class MenuState extends GameState
 	private int tick = 180;
 	private int selected = 0;
 	
-	private String[] options = {"New Game", "Quit"};
+	private String[] options = {"New Game", "Credits", "Quit"};
 
 	public MenuState(GameStateManager gsm)
 	{
@@ -88,7 +88,14 @@ public class MenuState extends GameState
 				gsm.changeState(GameStateManager.PLAY_STATE);
 			}
 			if(selected == 1)
+			{
+				gsm.loadState(new CreditsState(gsm));
+				gsm.changeState(gsm.getNumberStates() - 1);
+			}
+			if(selected == 2)
+			{
 				System.exit(0);
+			}
 		}
 		
 		if(k == KeyEvent.VK_UP && selected > 0)
@@ -96,7 +103,7 @@ public class MenuState extends GameState
 			selected--;
 		}
 		
-		if(k == KeyEvent.VK_DOWN && selected < 1)
+		if(k == KeyEvent.VK_DOWN && selected < 2)
 		{
 			selected++;
 		}

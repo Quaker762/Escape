@@ -16,6 +16,7 @@ import java.util.Random;
 import com.palmstudios.system.Art;
 import com.palmstudios.system.Map;
 import com.palmstudios.system.Tile;
+import com.palmstudios.tile.AirTile;
 
 /**
  * @author Curtis
@@ -23,8 +24,7 @@ import com.palmstudios.system.Tile;
  */
 public class Enemy extends Entity
 {
-	
-	public static final int ANIM_TIME = 20;
+	public static final int COOLDOWN_TIMER = 200;
 	
 	private Random 			rand;
 	
@@ -40,6 +40,8 @@ public class Enemy extends Entity
 	private BufferedImage 	currentFrame;
 	private int				animTimer;
 	private int				framePtr;
+	private int				coolDown;
+	private int				ANIM_TIME = 20;
 	
 	private Player player; 
 	
@@ -56,6 +58,7 @@ public class Enemy extends Entity
 		
 		rand = new Random();
 		
+		coolDown	= 0;
 		framePtr 	= 0;
 		animTimer 	= 0;
 		
@@ -66,6 +69,25 @@ public class Enemy extends Entity
 	@Override
 	public void update()
 	{
+		if(map.getTileAt(x / Tile.TILE_SIZE, (y / Tile.TILE_SIZE) + 1).getType() == Tile.TILE_SPIKE)
+		{
+			map.setTileAt(x / Tile.TILE_SIZE, (y / Tile.TILE_SIZE) + 1, new AirTile());
+			speed /= 2;
+			ANIM_TIME *= 2;
+		}
+				
+		if(player.getX() == x && player.getY() == y)
+		{
+			if(coolDown <= 0)
+			{
+				player.hurtPlayer(1);
+				coolDown = COOLDOWN_TIMER;
+			}
+		}
+		
+		if(coolDown > 0)
+			coolDown--;
+		
 		// Do Animation
 		currentFrame = (BufferedImage)Art.enemyFrames[framePtr][0];
 		animTimer++;
